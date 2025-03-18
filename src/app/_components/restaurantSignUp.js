@@ -1,6 +1,8 @@
+"use client";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-const RestaurantSighUp = () => {
+const RestaurantSignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [c_password, setC_password] = useState('');
@@ -8,12 +10,14 @@ const RestaurantSighUp = () => {
   const [city, setCity] = useState('');
   const [address, setAddress] = useState('');
   const [contact, setContact] = useState('');
+  const router = useRouter();
+
   
   const handleSignUp = async ()=>{
 
     // console.log(email,password,c_password,name,city,address,contact);
 
-    let result = await fetch("http://localhost:3000/api/restaurant", {
+    let response = await fetch("http://localhost:3000/api/restaurant", {
       method:"POST",
       headers: {
         "Content-Type": "application/json"
@@ -21,10 +25,17 @@ const RestaurantSighUp = () => {
       body:JSON.stringify({email,password,name,city,address,contact})
     })
 
-    result = await result.json();
-    // console.log(result);
-    if(result.success){
+    response = await response.json();
+    if(response.success){
+      // console.log(response);
       alert("Restaurant Registered Successfully😊")
+      
+      const {result} = response;
+      delete result.password;
+      // console.log(response);
+
+      localStorage.setItem("restaurantUser", JSON.stringify(result));
+      router.push("/restaurant/dashboard");
     }
   }
 
@@ -104,4 +115,4 @@ const RestaurantSighUp = () => {
   );
 };
 
-export default RestaurantSighUp;
+export default RestaurantSignUp;
